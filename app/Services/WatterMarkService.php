@@ -50,11 +50,8 @@ class WatterMarkService
         return $thumb;
     }
 
-    public function addWatterMark(string $mainColor, string $path): string
+    public function addWatterMark($mainImage, $watterMark): string
     {
-        $mainImage  = imagecreatefromjpeg($path);
-        $watterMark = $this->resize($this->getWatterMark($mainColor));
-
         imagecopy($mainImage,
                   $watterMark,
                   imagesx($mainImage) - imagesx($watterMark),

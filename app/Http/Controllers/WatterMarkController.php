@@ -23,8 +23,9 @@ class WatterMarkController extends Controller
     public function addWatterMark(WatterMarkRequest $request): JsonResponse
     {
         if ($image = $this->watterMarkService->storeImage($request->file('image'))) {
-            $mainColor = $this->watterMarkService->defineColor($image);
-            $path      = $this->watterMarkService->addWatterMark($mainColor, $image);
+            $mainColor  = $this->watterMarkService->defineColor($image);
+            $watterMark = $this->watterMarkService->resize($this->watterMarkService->getWatterMark($mainColor));
+            $path       = $this->watterMarkService->addWatterMark(imagecreatefromjpeg($image),$watterMark);
             return response()->json(WatterMarkResource::make(['path' => $path]));
         }
 
