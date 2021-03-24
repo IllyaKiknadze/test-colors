@@ -6,7 +6,7 @@ use App\Http\Requests\WatterMarkRequest;
 use App\Http\Resources\WatterMarkResource;
 use App\Services\WatterMarkService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+
 
 class WatterMarkController extends Controller
 {
@@ -22,7 +22,12 @@ class WatterMarkController extends Controller
 
     public function addWatterMark(WatterMarkRequest $request): JsonResponse
     {
-        $this->watterMarkService->addWatterMark($request->file('image'));
-        return response()->json(WatterMarkResource::make());
+        if ($image = $this->watterMarkService->storeImage($request->file('image'))) {
+            $mainColor = $this->watterMarkService->defineColor($image);
+            $path      = $this->watterMarkService->addWatterMark($mainColor, $image);
+            return response()->json(WatterMarkResource::make(['path' => $path]));
+        }
+
+        return response()->json(['message' => 'File can\'t be stored'], 500);
     }
 }
